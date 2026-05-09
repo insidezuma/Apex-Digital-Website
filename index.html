@@ -1,1047 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>APEX DIGITAL
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --black: #090909;
-      --white: #f5f2eb;
-      --cream: #f0ead8;
-      --accent: #e8ff47;
-      --accent2: #ff4d2e;
-      --mid: #1a1a1a;
-      --muted: #666;
-      --border: rgba(245,242,235,0.12);
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-      cursor: none;
-    }
-
-    /* Custom Cursor */
-    #cursor {
-      width: 12px; height: 12px;
-      background: var(--accent);
-      border-radius: 50%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-      mix-blend-mode: difference;
-    }
-    #cursor-ring {
-      width: 36px; height: 36px;
-      border: 1.5px solid rgba(232,255,71,0.5);
-      border-radius: 50%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%,-50%);
-      transition: transform 0.15s ease, width 0.25s, height 0.25s, border-color 0.2s;
-    }
-    body:has(a:hover) #cursor, body:has(button:hover) #cursor { width: 20px; height: 20px; }
-    body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { width: 56px; height: 56px; border-color: var(--accent); }
-
-    /* Noise overlay */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1000; opacity: 0.35;
-    }
-
-    /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 500;
-      padding: 24px 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.3s, background 0.3s, padding 0.3s;
-    }
-    nav.scrolled {
-      background: rgba(9,9,9,0.92);
-      backdrop-filter: blur(16px);
-      border-color: var(--border);
-      padding: 16px 48px;
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--white);
-      text-decoration: none;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .nav-logo .dot { 
-      width: 8px; height: 8px; 
-      background: var(--accent); 
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.7; }
-    }
-    .nav-links {
-      display: flex; align-items: center; gap: 36px;
-      list-style: none;
-    }
-    .nav-links a {
-      color: rgba(245,242,235,0.65);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: 0.3px;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      background: var(--accent);
-      color: var(--black) !important;
-      padding: 10px 22px;
-      border-radius: 4px;
-      font-weight: 500 !important;
-      font-size: 14px !important;
-      transition: background 0.2s, transform 0.15s !important;
-    }
-    .nav-cta:hover { background: #d4eb3a !important; transform: translateY(-1px); }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 48px 80px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background: 
-        radial-gradient(ellipse 70% 50% at 75% 40%, rgba(232,255,71,0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 60% at 20% 80%, rgba(255,77,46,0.06) 0%, transparent 50%);
-    }
-    .hero-grid {
-      position: absolute; inset: 0;
-      background-image: 
-        linear-gradient(rgba(245,242,235,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(245,242,235,0.04) 1px, transparent 1px);
-      background-size: 80px 80px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
-    }
-    .hero-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.3s forwards;
-    }
-    .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(56px, 8vw, 120px);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -3px;
-      max-width: 1100px;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.5s forwards;
-    }
-    .hero-title em {
-      font-style: italic;
-      font-weight: 400;
-      color: rgba(245,242,235,0.45);
-    }
-    .hero-title .highlight {
-      color: var(--accent);
-      position: relative;
-    }
-    .hero-bottom {
-      display: flex; align-items: flex-end;
-      justify-content: space-between;
-      margin-top: 64px;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.8s forwards;
-    }
-    .hero-desc {
-      max-width: 400px;
-      color: rgba(245,242,235,0.55);
-      font-size: 16px;
-      line-height: 1.7;
-      font-weight: 300;
-    }
-    .hero-actions {
-      display: flex; gap: 16px; align-items: center;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: var(--black);
-      border: none;
-      padding: 16px 32px;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 500;
-      border-radius: 4px;
-      cursor: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(232,255,71,0.3); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--white);
-      border: 1px solid var(--border);
-      padding: 16px 32px;
-      font-family: var(--font-body);
-      font-size: 15px;
-      font-weight: 400;
-      border-radius: 4px;
-      cursor: none;
-      transition: border-color 0.2s, background 0.2s;
-      text-decoration: none;
-    }
-    .btn-ghost:hover { border-color: rgba(245,242,235,0.4); background: rgba(245,242,235,0.05); }
-
-    /* MARQUEE */
-    .marquee-wrap {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0;
-      overflow: hidden;
-      background: rgba(232,255,71,0.03);
-    }
-    .marquee-track {
-      display: flex; gap: 60px;
-      width: max-content;
-      animation: marquee 28s linear infinite;
-    }
-    .marquee-item {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(245,242,235,0.35);
-      white-space: nowrap;
-      display: flex; align-items: center; gap: 24px;
-    }
-    .marquee-item .sep { color: var(--accent); font-size: 8px; }
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-    /* SECTION BASE */
-    section { padding: 120px 48px; position: relative; }
-
-    .section-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 11px; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--accent);
-      font-weight: 500; margin-bottom: 24px;
-    }
-    .section-tag::before {
-      content: ''; width: 20px; height: 1px; background: var(--accent);
-    }
-
-    /* SERVICES */
-    .services-header {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      margin-bottom: 80px;
-    }
-    .services-title {
-      font-family: var(--font-display);
-      font-size: clamp(40px, 5vw, 72px);
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1;
-      max-width: 600px;
-    }
-    .services-title em { color: rgba(245,242,235,0.35); font-style: italic; font-weight: 400; }
-    .services-subtitle {
-      max-width: 320px;
-      color: rgba(245,242,235,0.5);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-    .service-card {
-      background: var(--mid);
-      padding: 48px 40px;
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: background 0.3s;
-      cursor: none;
-      group: true;
-    }
-    .service-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(232,255,71,0.06) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .service-card:hover { background: #1f1f1f; }
-    .service-card:hover::before { opacity: 1; }
-    .service-num {
-      font-family: var(--font-display);
-      font-size: 11px; letter-spacing: 2px;
-      color: rgba(245,242,235,0.25);
-      margin-bottom: 48px;
-      font-weight: 600;
-    }
-    .service-icon {
-      font-size: 32px; margin-bottom: 24px; 
-      display: block;
-      filter: grayscale(0.3);
-    }
-    .service-name {
-      font-family: var(--font-display);
-      font-size: 22px; font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
-    }
-    .service-desc {
-      color: rgba(245,242,235,0.5);
-      font-size: 14px;
-      line-height: 1.7;
-      margin-bottom: 32px;
-    }
-    .service-tags {
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .tag {
-      font-size: 11px; letter-spacing: 0.5px;
-      color: rgba(245,242,235,0.4);
-      border: 1px solid var(--border);
-      padding: 4px 10px; border-radius: 2px;
-    }
-    .service-arrow {
-      position: absolute; bottom: 40px; right: 40px;
-      width: 40px; height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
-    }
-    .service-card:hover .service-arrow {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--black);
-      transform: rotate(45deg);
-    }
-
-    /* STATS */
-    .stats-section {
-      padding: 80px 48px;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(232,255,71,0.02) 0%, transparent 100%);
-    }
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 48px;
-    }
-    .stat-item { padding: 0 24px; border-left: 1px solid var(--border); }
-    .stat-number {
-      font-family: var(--font-display);
-      font-size: 56px; font-weight: 800;
-      letter-spacing: -3px; line-height: 1;
-      color: var(--white);
-    }
-    .stat-number span { color: var(--accent); }
-    .stat-label {
-      color: rgba(245,242,235,0.45);
-      font-size: 13px; margin-top: 12px;
-      letter-spacing: 0.5px;
-    }
-
-    /* PROCESS */
-    .process-steps {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      border: 1px solid var(--border);
-      margin-top: 80px;
-    }
-    .process-step {
-      padding: 48px 36px;
-      border-right: 1px solid var(--border);
-      position: relative;
-      transition: background 0.3s;
-    }
-    .process-step:last-child { border-right: none; }
-    .process-step:hover { background: rgba(232,255,71,0.03); }
-    .process-step-num {
-      font-family: var(--font-display);
-      font-size: 64px; font-weight: 800;
-      color: rgba(245,242,235,0.06);
-      letter-spacing: -4px; line-height: 1;
-      margin-bottom: 32px;
-    }
-    .process-step-title {
-      font-family: var(--font-display);
-      font-size: 18px; font-weight: 700;
-      margin-bottom: 12px;
-      letter-spacing: -0.3px;
-    }
-    .process-step-desc {
-      color: rgba(245,242,235,0.45);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    /* WHO WE SERVE */
-    .clients-section {
-      background: var(--mid);
-      border-top: 1px solid var(--border);
-    }
-    .clients-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2px; margin-top: 64px;
-    }
-    .client-card {
-      background: var(--black);
-      padding: 56px 48px;
-      border: 1px solid var(--border);
-      transition: background 0.3s;
-      cursor: none;
-    }
-    .client-card:hover { background: #0f0f0f; }
-    .client-type-badge {
-      display: inline-block;
-      background: rgba(232,255,71,0.1);
-      color: var(--accent);
-      font-size: 10px; letter-spacing: 2px;
-      text-transform: uppercase; font-weight: 600;
-      padding: 5px 12px; border-radius: 2px;
-      margin-bottom: 32px;
-    }
-    .client-card-title {
-      font-family: var(--font-display);
-      font-size: 32px; font-weight: 800;
-      letter-spacing: -1px; line-height: 1.1;
-      margin-bottom: 20px;
-    }
-    .client-card-desc {
-      color: rgba(245,242,235,0.5);
-      font-size: 15px; line-height: 1.7;
-      margin-bottom: 36px;
-    }
-    .client-bullets {
-      list-style: none;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .client-bullets li {
-      color: rgba(245,242,235,0.6);
-      font-size: 14px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .client-bullets li::before {
-      content: '';
-      width: 16px; height: 1px;
-      background: var(--accent); flex-shrink: 0;
-    }
-
-    /* RESULTS */
-    .results-section { background: var(--black); }
-    .results-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 2px; margin-top: 64px;
-    }
-    .result-card {
-      background: var(--mid);
-      padding: 48px;
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-    }
-    .result-card::after {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: var(--accent);
-    }
-    .result-metric {
-      font-family: var(--font-display);
-      font-size: 52px; font-weight: 800;
-      letter-spacing: -3px; color: var(--accent);
-      line-height: 1;
-    }
-    .result-desc {
-      margin-top: 16px;
-      font-size: 15px; color: rgba(245,242,235,0.55);
-      line-height: 1.6;
-    }
-    .result-company {
-      margin-top: 24px;
-      font-size: 12px; letter-spacing: 1px;
-      text-transform: uppercase;
-      color: rgba(245,242,235,0.3);
-      font-weight: 500;
-    }
-
-    /* CTA */
-    .cta-section {
-      background: var(--accent);
-      padding: 120px 48px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-section::before {
-      content: 'GROW';
-      position: absolute;
-      font-family: var(--font-display);
-      font-size: 320px; font-weight: 800;
-      color: rgba(0,0,0,0.06);
-      letter-spacing: -20px;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      white-space: nowrap;
-      pointer-events: none;
-    }
-    .cta-title {
-      font-family: var(--font-display);
-      font-size: clamp(48px, 7vw, 96px);
-      font-weight: 800;
-      color: var(--black);
-      letter-spacing: -3px;
-      line-height: 0.95;
-      position: relative;
-      margin-bottom: 32px;
-    }
-    .cta-subtitle {
-      font-size: 18px;
-      color: rgba(0,0,0,0.55);
-      max-width: 480px;
-      margin: 0 auto 48px;
-      line-height: 1.6;
-      position: relative;
-    }
-    .btn-dark {
-      background: var(--black);
-      color: var(--white);
-      border: none;
-      padding: 18px 40px;
-      font-family: var(--font-body);
-      font-size: 16px;
-      font-weight: 500;
-      border-radius: 4px;
-      cursor: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-      position: relative;
-    }
-    .btn-dark:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
-
-    /* FOOTER */
-    footer {
-      background: var(--mid);
-      border-top: 1px solid var(--border);
-      padding: 80px 48px 40px;
-    }
-    .footer-top {
-      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 80px; margin-bottom: 64px;
-    }
-    .footer-brand-name {
-      font-family: var(--font-display);
-      font-size: 24px; font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 16px;
-    }
-    .footer-brand-desc {
-      color: rgba(245,242,235,0.4);
-      font-size: 14px; line-height: 1.7;
-      max-width: 280px; margin-bottom: 32px;
-    }
-    .footer-social {
-      display: flex; gap: 12px;
-    }
-    .social-icon {
-      width: 36px; height: 36px;
-      border: 1px solid var(--border);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; color: rgba(245,242,235,0.5);
-      text-decoration: none;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .social-icon:hover { border-color: var(--accent); color: var(--accent); }
-    .footer-col-title {
-      font-family: var(--font-display);
-      font-size: 13px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase;
-      margin-bottom: 24px;
-      color: rgba(245,242,235,0.5);
-    }
-    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-    .footer-links a {
-      color: rgba(245,242,235,0.4);
-      text-decoration: none; font-size: 14px;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--white); }
-    .footer-bottom {
-      border-top: 1px solid var(--border);
-      padding-top: 32px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .footer-copy { color: rgba(245,242,235,0.3); font-size: 13px; }
-    .footer-legal { display: flex; gap: 24px; }
-    .footer-legal a {
-      color: rgba(245,242,235,0.3); font-size: 13px;
-      text-decoration: none; transition: color 0.2s;
-    }
-    .footer-legal a:hover { color: rgba(245,242,235,0.6); }
-
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(32px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .reveal {
-      opacity: 0; transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-
-    /* SCROLLBAR */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--black); }
-    ::-webkit-scrollbar-thumb { background: rgba(232,255,71,0.3); border-radius: 2px; }
-
-    /* MOBILE */
-    @media (max-width: 768px) {
-      nav { padding: 20px 24px; }
-      nav.scrolled { padding: 14px 24px; }
-      .nav-links { display: none; }
-      .hero { padding: 0 24px 60px; }
-      section { padding: 80px 24px; }
-      .services-header { flex-direction: column; gap: 24px; }
-      .services-grid { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-      .process-steps { grid-template-columns: 1fr 1fr; }
-      .clients-grid, .results-grid { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr; gap: 40px; }
-      .hero-bottom { flex-direction: column; gap: 32px; align-items: flex-start; }
-      .cta-section { padding: 80px 24px; }
-      body { cursor: auto; }
-      #cursor, #cursor-ring { display: none; }
-      .btn-primary, .btn-ghost, .btn-dark { cursor: pointer; }
-      nav .nav-cta { cursor: pointer; }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mntolo Agency — Digital Luxury for Physical Brands</title>
+  <meta name="description" content="Mntolo Agency elevates physical stores into powerful digital presences through SEO, Social Media, Paid Ads, and bespoke Web Development." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
 
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#" class="nav-logo"><span class="dot"></span>APEX DIGITAL</a>
-  <ul class="nav-links">
-    <li><a href="#services">Services</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#results">Results</a></li>
-    <li><a href="#clients">Who We Serve</a></li>
-    <li><a href="#contact" class="nav-cta">Start Growing →</a></li>
-  </ul>
-</nav>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">
+      <span class="logo-mark">M</span>
+      <span class="logo-text">ntolo</span>
+    </a>
+    <div class="nav-links">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#approach" class="nav-link">Approach</a>
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#contact" class="nav-link nav-cta">Start a Project</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span>
+    </button>
+  </nav>
 
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <p class="hero-label">B2B SaaS & E-Commerce Growth Agency</p>
-  <h1 class="hero-title">
-    We make<br>
-    <em>companies</em><br>
-    <span class="highlight">impossible</span><br>
-    to ignore.
-  </h1>
-  <div class="hero-bottom">
-    <p class="hero-desc">
-      Full-stack digital marketing for ambitious SaaS companies and e-commerce brands — SEO, Paid Ads, Social, and Web. No fluff. Just results.
-    </p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn-primary">Get Free Audit <span>→</span></a>
-      <a href="#results" class="btn-ghost">See Case Studies</a>
-    </div>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item">SEO &amp; Content <span class="sep">◆</span></span>
-    <span class="marquee-item">Paid Acquisition <span class="sep">◆</span></span>
-    <span class="marquee-item">Social Media <span class="sep">◆</span></span>
-    <span class="marquee-item">Web Development <span class="sep">◆</span></span>
-    <span class="marquee-item">Conversion Rate Optimization <span class="sep">◆</span></span>
-    <span class="marquee-item">B2B SaaS Growth <span class="sep">◆</span></span>
-    <span class="marquee-item">E-Commerce Scaling <span class="sep">◆</span></span>
-    <span class="marquee-item">Analytics &amp; Attribution <span class="sep">◆</span></span>
-    <span class="marquee-item">SEO &amp; Content <span class="sep">◆</span></span>
-    <span class="marquee-item">Paid Acquisition <span class="sep">◆</span></span>
-    <span class="marquee-item">Social Media <span class="sep">◆</span></span>
-    <span class="marquee-item">Web Development <span class="sep">◆</span></span>
-    <span class="marquee-item">Conversion Rate Optimization <span class="sep">◆</span></span>
-    <span class="marquee-item">B2B SaaS Growth <span class="sep">◆</span></span>
-    <span class="marquee-item">E-Commerce Scaling <span class="sep">◆</span></span>
-    <span class="marquee-item">Analytics &amp; Attribution <span class="sep">◆</span></span>
-  </div>
-</div>
-
-<!-- STATS -->
-<div class="stats-section reveal">
-  <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-number" data-target="240">0<span>%</span></div>
-      <div class="stat-label">Average Organic Traffic Increase</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="3.8"><span>$</span>0<span>M+</span></div>
-      <div class="stat-label">Ad Spend Managed Annually</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="130">0<span>+</span></div>
-      <div class="stat-label">Brands Scaled Since 2018</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="94">0<span>%</span></div>
-      <div class="stat-label">Client Retention Rate</div>
-    </div>
-  </div>
-</div>
-
-<!-- SERVICES -->
-<section id="services">
-  <div class="services-header reveal">
-    <div>
-      <div class="section-tag">What We Do</div>
-      <h2 class="services-title">
-        Every channel.<br>
-        <em>One strategy.</em>
-      </h2>
-    </div>
-    <p class="services-subtitle">
-      We don't do isolated tactics. We build integrated growth systems where every channel amplifies the others.
-    </p>
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#approach" class="mobile-link">Approach</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#contact" class="mobile-link">Start a Project</a>
   </div>
 
-  <div class="services-grid">
-    <div class="service-card reveal">
-      <div class="service-num">01 / 05</div>
-      <span class="service-icon">📈</span>
-      <h3 class="service-name">SEO & Content Strategy</h3>
-      <p class="service-desc">Dominate search rankings with technical SEO, strategic content, and link building that compounds over time. Built for long-term organic growth.</p>
-      <div class="service-tags">
-        <span class="tag">Technical SEO</span>
-        <span class="tag">Content Marketing</span>
-        <span class="tag">Link Building</span>
-        <span class="tag">Topical Authority</span>
-      </div>
-      <div class="service-arrow">↗</div>
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-grain"></div>
+      <div class="hero-lines"></div>
     </div>
-    <div class="service-card reveal reveal-delay-1">
-      <div class="service-num">02 / 05</div>
-      <span class="service-icon">🎯</span>
-      <h3 class="service-name">Paid Advertising</h3>
-      <p class="service-desc">High-ROI campaigns across Google, Meta, LinkedIn, and beyond. We obsess over CAC, LTV, and ROAS — not vanity metrics.</p>
-      <div class="service-tags">
-        <span class="tag">Google Ads</span>
-        <span class="tag">Meta Ads</span>
-        <span class="tag">LinkedIn Ads</span>
-        <span class="tag">Retargeting</span>
-      </div>
-      <div class="service-arrow">↗</div>
-    </div>
-    <div class="service-card reveal reveal-delay-2">
-      <div class="service-num">03 / 05</div>
-      <span class="service-icon">📱</span>
-      <h3 class="service-name">Social Media Marketing</h3>
-      <p class="service-desc">Build an audience that actually converts. From LinkedIn thought leadership to viral product content — we grow your brand presence with intent.</p>
-      <div class="service-tags">
-        <span class="tag">LinkedIn</span>
-        <span class="tag">Instagram</span>
-        <span class="tag">TikTok</span>
-        <span class="tag">X / Twitter</span>
-      </div>
-      <div class="service-arrow">↗</div>
-    </div>
-    <div class="service-card reveal reveal-delay-1">
-      <div class="service-num">04 / 05</div>
-      <span class="service-icon">⚡</span>
-      <h3 class="service-name">Web Development</h3>
-      <p class="service-desc">Blazing-fast, conversion-optimised websites and landing pages. Built on modern stacks — Next.js, React, Webflow — with measurable performance goals.</p>
-      <div class="service-tags">
-        <span class="tag">Next.js</span>
-        <span class="tag">React</span>
-        <span class="tag">Webflow</span>
-        <span class="tag">CRO</span>
-      </div>
-      <div class="service-arrow">↗</div>
-    </div>
-    <div class="service-card reveal reveal-delay-2">
-      <div class="service-num">05 / 05</div>
-      <span class="service-icon">🔬</span>
-      <h3 class="service-name">Analytics & Attribution</h3>
-      <p class="service-desc">Full-funnel visibility into what's actually driving revenue. GA4, Segment, Mixpanel — we connect the dots between marketing activity and pipeline.</p>
-      <div class="service-tags">
-        <span class="tag">GA4</span>
-        <span class="tag">Segment</span>
-        <span class="tag">Mixpanel</span>
-        <span class="tag">Dashboards</span>
-      </div>
-      <div class="service-arrow">↗</div>
-    </div>
-    <div class="service-card reveal reveal-delay-3" style="background: rgba(232,255,71,0.05); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; min-height:280px;">
-      <p style="color:rgba(245,242,235,0.3); font-size:13px; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px;">Ready to scale?</p>
-      <h3 style="font-family:var(--font-display); font-size:28px; font-weight:800; letter-spacing:-1px; margin-bottom:24px;">Let's build your<br>growth engine.</h3>
-      <a href="#contact" class="btn-primary" style="font-size:14px; padding:13px 26px;">Book a Call →</a>
-    </div>
-  </div>
-</section>
-
-<!-- PROCESS -->
-<section id="process" style="background: var(--mid); border-top: 1px solid var(--border);">
-  <div class="reveal">
-    <div class="section-tag">How We Work</div>
-    <h2 class="services-title">From audit to<br><em>full velocity.</em></h2>
-  </div>
-  <div class="process-steps reveal">
-    <div class="process-step">
-      <div class="process-step-num">01</div>
-      <h3 class="process-step-title">Deep Audit</h3>
-      <p class="process-step-desc">We dig into your current stack, competitive landscape, and growth bottlenecks. No assumptions — only data.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-step-num">02</div>
-      <h3 class="process-step-title">Growth Blueprint</h3>
-      <p class="process-step-desc">A custom 90-day roadmap aligned to your revenue goals. Prioritised channels, budgets, and KPIs laid out clearly.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-step-num">03</div>
-      <h3 class="process-step-title">Rapid Execution</h3>
-      <p class="process-step-desc">Our team ships fast. Campaigns live within days, not weeks. Weekly reporting keeps you in the loop at all times.</p>
-    </div>
-    <div class="process-step">
-      <div class="process-step-num">04</div>
-      <h3 class="process-step-title">Compound Scaling</h3>
-      <p class="process-step-desc">We iterate, double down on winners, and build systems that grow ROI month over month. The flywheel never stops.</p>
-    </div>
-  </div>
-</section>
-
-<!-- WHO WE SERVE -->
-<section class="clients-section" id="clients">
-  <div class="reveal">
-    <div class="section-tag">Ideal Clients</div>
-    <h2 class="services-title">Built for<br><em>ambitious brands.</em></h2>
-  </div>
-  <div class="clients-grid">
-    <div class="client-card reveal">
-      <span class="client-type-badge">B2B SaaS</span>
-      <h3 class="client-card-title">Software companies ready to break out of stagnant growth</h3>
-      <p class="client-card-desc">We understand long sales cycles, product-led growth, and the nuances of marketing to technical buyers. Our playbooks are built specifically for SaaS.</p>
-      <ul class="client-bullets">
-        <li>Series A–C companies with $1M–$20M ARR</li>
-        <li>PLG & SLG motions</li>
-        <li>Developer tools, HR tech, fintech, and more</li>
-        <li>Companies targeting SMB or Enterprise segments</li>
-      </ul>
-    </div>
-    <div class="client-card reveal reveal-delay-1">
-      <span class="client-type-badge">E-Commerce</span>
-      <h3 class="client-card-title">DTC and marketplace brands ready to scale past the plateau</h3>
-      <p class="client-card-desc">From launch to 8-figures, we've scaled e-commerce brands across beauty, apparel, health, and consumer tech with performance marketing that actually converts.</p>
-      <ul class="client-bullets">
-        <li>Shopify, WooCommerce & custom platforms</li>
-        <li>$500K–$20M annual revenue brands</li>
-        <li>DTC, Amazon & omnichannel strategies</li>
-        <li>Subscription, one-time purchase & hybrid models</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- RESULTS -->
-<section class="results-section" id="results">
-  <div class="reveal">
-    <div class="section-tag">Case Studies</div>
-    <h2 class="services-title">Numbers that<br><em>speak louder.</em></h2>
-  </div>
-  <div class="results-grid">
-    <div class="result-card reveal">
-      <div class="result-metric">+380%</div>
-      <p class="result-desc">Organic search traffic growth in 9 months for a B2B project management SaaS. SEO + content strategy targeting mid-funnel decision makers drove a 4× pipeline increase.</p>
-      <div class="result-company">Project Management SaaS — Series B</div>
-    </div>
-    <div class="result-card reveal reveal-delay-1">
-      <div class="result-metric">2.1× ROAS</div>
-      <p class="result-desc">Turned unprofitable Meta campaigns into a scalable acquisition channel for a DTC skincare brand. Reduced CPA by 44% while scaling ad spend 3× in 6 months.</p>
-      <div class="result-company">DTC Skincare Brand — $8M Revenue</div>
-    </div>
-    <div class="result-card reveal reveal-delay-2">
-      <div class="result-metric">$2.4M</div>
-      <p class="result-desc">Pipeline generated in Q1 for an HR tech SaaS via LinkedIn ABM campaigns and SEO content targeting 500+ employee companies. Cost per MQL dropped 38%.</p>
-      <div class="result-company">HR Tech SaaS — Mid-Market Focus</div>
-    </div>
-    <div class="result-card reveal reveal-delay-3">
-      <div class="result-metric">+290%</div>
-      <p class="result-desc">Revenue growth for an outdoor apparel brand using a full-funnel approach: Google Shopping, Meta prospecting, and email. Seasonal ROAS peaked at 6.8× during campaign push.</p>
-      <div class="result-company">Outdoor Apparel Brand — E-Commerce</div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="contact">
-  <h2 class="cta-title">Stop leaving<br>revenue on<br>the table.</h2>
-  <p class="cta-subtitle">Book a free 30-minute growth audit. We'll identify your biggest opportunities and show you exactly how we'd attack them.</p>
-  <a href="mailto:hello@apexdigital.co" class="btn-dark">Get Your Free Audit →</a>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-    <div>
-      <div class="footer-brand-name">APEX DIGITAL</div>
-      <p class="footer-brand-desc">Growth marketing for ambitious B2B SaaS and e-commerce brands. We build systems that compound.</p>
-      <div class="footer-social">
-        <a href="#" class="social-icon">in</a>
-        <a href="#" class="social-icon">𝕏</a>
-        <a href="#" class="social-icon">▶</a>
-        <a href="#" class="social-icon">ig</a>
+    <div class="hero-content">
+      <p class="hero-eyebrow reveal">Digital Marketing Agency</p>
+      <h1 class="hero-title reveal">
+        <span class="line">Your Store,</span>
+        <span class="line italic">Reimagined</span>
+        <span class="line">Online.</span>
+      </h1>
+      <p class="hero-sub reveal">
+        We transform physical retail into thriving digital empires — through precision SEO, 
+        commanding social presence, and beautifully crafted web experiences.
+      </p>
+      <div class="hero-actions reveal">
+        <a href="#contact" class="btn-primary">Begin the Journey</a>
+        <a href="#services" class="btn-ghost">Our Services</a>
       </div>
     </div>
-    <div>
-      <div class="footer-col-title">Services</div>
-      <ul class="footer-links">
-        <li><a href="#">SEO & Content</a></li>
-        <li><a href="#">Paid Advertising</a></li>
-        <li><a href="#">Social Media</a></li>
-        <li><a href="#">Web Development</a></li>
-        <li><a href="#">Analytics</a></li>
-      </ul>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
     </div>
-    <div>
-      <div class="footer-col-title">Company</div>
-      <ul class="footer-links">
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Case Studies</a></li>
-        <li><a href="#">Blog</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+    <div class="hero-stat-strip">
+      <div class="stat">
+        <span class="stat-num">150+</span>
+        <span class="stat-label">Stores Elevated</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">340%</span>
+        <span class="stat-label">Avg. Traffic Growth</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">8x</span>
+        <span class="stat-label">Avg. ROI on Paid Ads</span>
+      </div>
     </div>
-    <div>
-      <div class="footer-col-title">Contact</div>
-      <ul class="footer-links">
-        <li><a href="mailto:hello@apexdigital.co">hello@apexdigital.co</a></li>
-        <li><a href="#">Book a Call</a></li>
-        <li><a href="#">Free Audit</a></li>
-      </ul>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-inner" id="marquee">
+        <span>SEO Mastery</span><span class="dot">◆</span>
+        <span>Social Media</span><span class="dot">◆</span>
+        <span>Paid Advertising</span><span class="dot">◆</span>
+        <span>Web Development</span><span class="dot">◆</span>
+        <span>Brand Strategy</span><span class="dot">◆</span>
+        <span>Content Creation</span><span class="dot">◆</span>
+        <span>SEO Mastery</span><span class="dot">◆</span>
+        <span>Social Media</span><span class="dot">◆</span>
+        <span>Paid Advertising</span><span class="dot">◆</span>
+        <span>Web Development</span><span class="dot">◆</span>
+        <span>Brand Strategy</span><span class="dot">◆</span>
+        <span>Content Creation</span><span class="dot">◆</span>
+      </div>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p class="footer-copy">© 2025 Apex Digital. All rights reserved.</p>
-    <div class="footer-legal">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
+
+  <!-- Services -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-eyebrow">What We Do</p>
+        <h2 class="section-title">End-to-End<br /><em>Digital Excellence</em></h2>
+      </div>
+      <div class="services-grid">
+
+        <div class="service-card" data-num="01">
+          <div class="service-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="17" cy="17" r="10" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M24 24L34 34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M13 17H21M17 13V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3 class="service-name">Search Engine<br />Optimization</h3>
+          <p class="service-desc">Dominate Google rankings with technical precision and content strategy that drives qualified, high-intent traffic to your store.</p>
+          <ul class="service-list">
+            <li>Technical SEO Audits</li>
+            <li>Local SEO & Google Business</li>
+            <li>Content Strategy</li>
+            <li>Link Authority Building</li>
+          </ul>
+          <a href="#contact" class="service-link">Learn More →</a>
+        </div>
+
+        <div class="service-card featured" data-num="02">
+          <div class="service-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="8" width="30" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M14 32H26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M20 28V32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="20" cy="18" r="5" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h3 class="service-name">Social Media<br />Management</h3>
+          <p class="service-desc">Build a magnetic brand presence across platforms that converts followers into loyal, repeat customers — organically.</p>
+          <ul class="service-list">
+            <li>Profile Optimisation</li>
+            <li>Content Production</li>
+            <li>Community Management</li>
+            <li>Growth Analytics</li>
+          </ul>
+          <a href="#contact" class="service-link">Learn More →</a>
+        </div>
+
+        <div class="service-card" data-num="03">
+          <div class="service-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 28L14 19L20 25L26 15L35 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="35" cy="10" r="4" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M32 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 3"/>
+            </svg>
+          </div>
+          <h3 class="service-name">Paid<br />Advertising</h3>
+          <p class="service-desc">Precision-targeted campaigns on Google and Meta that deliver measurable returns — every rand spent, accountable.</p>
+          <ul class="service-list">
+            <li>Google Ads & Shopping</li>
+            <li>Meta & Instagram Ads</li>
+            <li>Retargeting Funnels</li>
+            <li>Performance Reporting</li>
+          </ul>
+          <a href="#contact" class="service-link">Learn More →</a>
+        </div>
+
+        <div class="service-card" data-num="04">
+          <div class="service-icon">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="6" y="6" width="28" height="28" rx="4" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M6 14H34" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M14 14V34" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3 class="service-name">Web<br />Development</h3>
+          <p class="service-desc">Bespoke websites and e-commerce platforms that are as beautiful as they are fast — engineered to convert visitors into buyers.</p>
+          <ul class="service-list">
+            <li>Custom Website Design</li>
+            <li>E-Commerce Stores</li>
+            <li>Speed & CRO Optimisation</li>
+            <li>Ongoing Maintenance</li>
+          </ul>
+          <a href="#contact" class="service-link">Learn More →</a>
+        </div>
+
+      </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<script>
-  // Cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursor-ring');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  function animCursor() {
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animCursor);
-  }
-  animCursor();
+  <!-- Approach -->
+  <section class="approach" id="approach">
+    <div class="approach-left">
+      <div class="approach-visual">
+        <div class="approach-circle c1"></div>
+        <div class="approach-circle c2"></div>
+        <div class="approach-circle c3"></div>
+        <div class="approach-center-text">
+          <span>Mntolo</span>
+          <span>Method</span>
+        </div>
+      </div>
+    </div>
+    <div class="approach-right">
+      <p class="section-eyebrow">Our Approach</p>
+      <h2 class="section-title">Strategy Before<br /><em>Execution.</em></h2>
+      <p class="approach-body">We don't sell packages — we build partnerships. Every campaign begins with deep discovery: understanding your customers, your competitors, and your ambitions. Only then do we act.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">I</div>
+          <div class="step-content">
+            <h4>Discover</h4>
+            <p>Deep-dive into your brand, audience, and competitive landscape.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">II</div>
+          <div class="step-content">
+            <h4>Architect</h4>
+            <p>Build a bespoke digital strategy tailored to your specific goals.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">III</div>
+          <div class="step-content">
+            <h4>Execute</h4>
+            <p>Deploy with precision across every channel simultaneously.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">IV</div>
+          <div class="step-content">
+            <h4>Optimise</h4>
+            <p>Continuously refine based on live data and performance signals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Navbar scroll
-  const nav = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 60);
-  });
+  <!-- Social Proof -->
+  <section class="testimonials" id="work">
+    <div class="container">
+      <div class="section-header centered">
+        <p class="section-eyebrow">Client Words</p>
+        <h2 class="section-title">Trusted by<br /><em>Store Owners</em></h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="quote-mark">"</div>
+          <p class="testimonial-text">Mntolo took our boutique clothing store from zero online presence to R200k in monthly e-commerce revenue within 6 months. They're exceptional.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">NK</div>
+            <div>
+              <p class="author-name">Nomsa Khumalo</p>
+              <p class="author-role">Owner, LUXE Boutique — Johannesburg</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card featured-testimonial">
+          <div class="quote-mark">"</div>
+          <p class="testimonial-text">Our Google ranking went from page 4 to position 1 for our main keyword. Foot traffic and online sales both doubled. The ROI is undeniable.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">TM</div>
+            <div>
+              <p class="author-name">Thabo Mokoena</p>
+              <p class="author-role">Director, Prestige Electronics — Cape Town</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="quote-mark">"</div>
+          <p class="testimonial-text">Their paid ads strategy delivered an 11x ROAS in the first quarter. I wish I'd found them sooner. Our salon is fully booked weeks in advance now.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SR</div>
+            <div>
+              <p class="author-name">Sipho Radebe</p>
+              <p class="author-role">CEO, Studio Radebe — Durban</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Reveal on scroll
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  <!-- CTA / Contact -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <div class="contact-bg-text">Start</div>
+      <p class="section-eyebrow light">Ready?</p>
+      <h2 class="contact-title">Let's Build Your<br /><em>Digital Empire.</em></h2>
+      <p class="contact-sub">Tell us about your store and where you want to go. We'll show you exactly how to get there.</p>
+      <form class="contact-form" id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Jane Dlamini" required />
+          </div>
+          <div class="form-group">
+            <label for="business">Business Name</label>
+            <input type="text" id="business" name="business" placeholder="Your Store Name" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="jane@yourbusiness.co.za" required />
+          </div>
+          <div class="form-group">
+            <label for="service">Service Interest</label>
+            <select id="service" name="service">
+              <option value="">Select a service</option>
+              <option>SEO</option>
+              <option>Social Media</option>
+              <option>Paid Advertising</option>
+              <option>Web Development</option>
+              <option>Full Package</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label for="message">Tell Us About Your Store</label>
+          <textarea id="message" name="message" rows="4" placeholder="Briefly describe your business and what you're looking to achieve online..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary submit-btn">
+          <span>Send Message</span>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
 
-  // Count-up animation
-  function countUp(el, target, isDecimal = false, prefix = '', suffix = '') {
-    const duration = 2000;
-    const start = performance.now();
-    function update(now) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const val = isDecimal ? (target * ease).toFixed(1) : Math.floor(target * ease);
-      el.innerHTML = `${prefix}${val}${suffix}`;
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  }
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo footer-logo">
+          <span class="logo-mark">M</span>
+          <span class="logo-text">ntolo</span>
+        </a>
+        <p class="footer-tagline">Elevating Physical Stores<br />into Digital Presences.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <p class="footer-col-title">Services</p>
+          <a href="#services">SEO</a>
+          <a href="#services">Social Media</a>
+          <a href="#services">Paid Ads</a>
+          <a href="#services">Web Development</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Company</p>
+          <a href="#approach">Our Approach</a>
+          <a href="#work">Client Results</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-col-title">Connect</p>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Facebook</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Mntolo Agency. All rights reserved.</p>
+      <p class="footer-made">Crafted with precision.</p>
+    </div>
+  </footer>
 
-  const statObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const el = e.target;
-        const target = parseFloat(el.dataset.target);
-        const inner = el.innerHTML;
-        const prefix = inner.includes('$') ? '$' : '';
-        const suffix = inner.includes('M+') ? 'M+' : inner.includes('%') ? '%' : inner.includes('+') ? '+' : '';
-        const isDecimal = target % 1 !== 0;
-        countUp(el, target, isDecimal, prefix, suffix);
-        statObserver.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-  document.querySelectorAll('[data-target]').forEach(el => statObserver.observe(el));
-</script>
+  <script src="js/main.js"></script>
 </body>
 </html>
